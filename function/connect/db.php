@@ -5,16 +5,31 @@ $password_db  = 'AVNS_J9V2kgQz6u--1f44ZMR';
 $database_db  = 'defaultdb';
 $port_db      = 16996;
 
-$conn = mysqli_connect(
+// 1. Khởi tạo mysqli
+$conn = mysqli_init();
+
+if (!$conn) {
+    die("Lỗi khởi tạo mysqli");
+}
+
+// 2. Bắt buộc bật SSL cho Aiven (không bắt buộc verify cert để tránh lỗi cert tự ký)
+mysqli_ssl_set($conn, NULL, NULL, NULL, NULL, NULL);
+
+// 3. Thực hiện kết nối kèm SSL
+$connected = mysqli_real_connect(
+    $conn,
     $localhost_db,
     $username_db,
     $password_db,
     $database_db,
-    $port_db
+    $port_db,
+    NULL,
+    MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT
 );
 
-if (!$conn) {
-    die("Lỗi kết nối: " . mysqli_connect_error());
+if (!$connected) {
+    die("Lỗi kết nối CSDL: " . mysqli_connect_error());
 }
 
+// 4. Thiết lập charset utf8mb4
 mysqli_set_charset($conn, "utf8mb4");
