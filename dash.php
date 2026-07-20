@@ -1,20 +1,16 @@
+<?php 
+// BẬT HIỂN THỊ LỖI - ĐẶT Ở ĐÂY MỚI CÓ TÁC DỤNG
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+function ExcludedDatabase() 
+{
+    // ... phần giữ nguyên
+}
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/head.php';?>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/nav.php';?>
-<?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-require $_SERVER['DOCUMENT_ROOT'].'/include/head.php';?>
-// .
-<main>
-    <script>
-  // Ép tắt Preloader sau 2.5s phòng trường hợp lỗi PHP/JS ngầm
-  setTimeout(function() {
-    var loader = document.querySelector('.preloader, #preloader, .loading-wrapper, #overlay-loading');
-    if (loader) {
-      loader.style.display = 'none';
-    }
-  }, 2500);
-    </script>
+
     
     <div class="container-none">
         <div class="grid grid-cols-12 gap-6">
