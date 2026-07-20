@@ -1,9 +1,9 @@
 <?php
-$localhost_db = 'tokaido.proxy.rlwy.net';
-$username_db  = 'root';
-$password_db  = 'bNfBDgkYBcxYPNbsxHIHEbXvzkDIeHIX';
-$database_db  = 'railway';
-$port_db      = 24575;
+$localhost_db = 'mysql-3f4b73e7-transang0307of-e326.d.aivencloud.com';
+$username_db  = 'avnadmin';
+$password_db  = 'AVNS_J9V2kgQz6u--1f44ZMR';
+$database_db  = 'defaultdb';
+$port_db      = 16996;
 
 $conn = mysqli_connect(
     $localhost_db,
