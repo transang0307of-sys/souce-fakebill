@@ -1,5 +1,10 @@
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/head.php';?>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/nav.php';?>
+<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+require $_SERVER['DOCUMENT_ROOT'].'/include/head.php';
+// .
 <main>
     <script>
   // Ép tắt Preloader sau 2.5s phòng trường hợp lỗi PHP/JS ngầm
