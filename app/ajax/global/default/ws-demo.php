@@ -3,7 +3,7 @@
 * Kết Nối CSDL
 */
 require($_SERVER['DOCUMENT_ROOT'].'/config/database.php');
-require($_SERVER['DOCUMENT_ROOT'].'/models/object/global/demoModel.php');
+require($_SERVER['DOCUMENT_ROOT'].'/server/models/object/global/demoModel.php');
 /**
  * Class CallDemo
  */
