@@ -19,17 +19,17 @@ class ThanhDieuInstaller
 
     public function __construct($data)
     {
-        $this->dbServer = $data['__ThanhDieuDbServer'];
-        $this->dbName = $data['__ThanhDieuDbName'];
-        $this->dbUser = $data['__ThanhDieuDbUser'];
-        $this->dbPwd = $data['__ThanhDieuDbPwd'];
-        $this->access_key = $data['access_key'];
-        $this->username = $data['username'];
-        $this->password = password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 7]);
-        $this->rank = $data['rank'];
+        $this->dbServer = $data['__ThanhDieuDbServer'] ?? '';
+        $this->dbName = $data['__ThanhDieuDbName'] ?? '';
+        $this->dbUser = $data['__ThanhDieuDbUser'] ?? '';
+        $this->dbPwd = $data['__ThanhDieuDbPwd'] ?? '';
+        $this->access_key = $data['access_key'] ?? '';
+        $this->username = $data['username'] ?? '';
+        $this->password = !empty($data['password']) ? password_hash($data['password'], PASSWORD_BCRYPT, ['cost' => 7]) : '';
+        $this->rank = $data['rank'] ?? 'admin';
         $this->response = ['error' => -1, 'msg' => null];
         $this->secret_key = md5(openssl_random_pseudo_bytes(12));
-        $this->ip = $_SERVER['REMOTE_ADDR'];
+        $this->ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
         $this->install_lock = $_SERVER['DOCUMENT_ROOT'].'/install.lock';
         date_default_timezone_set("Asia/Ho_Chi_Minh");
     }
@@ -55,12 +55,16 @@ class ThanhDieuInstaller
                 throw new Exception('Không thể chọn cơ sở dữ liệu: '.$thanhdieudb->error);
             }
 
-            $sql_file = $_SERVER['DOCUMENT_ROOT'].'/layout/pages/install/fakebill.sql';
+            $sql_file = $_SERVER['DOCUMENT_ROOT'].'/client/layout/pages/install/fakebill.sql';
             if (!file_exists($sql_file)) {
                 throw new Exception('Không tìm thấy file fakebill.sql ở mục /install/.');
             }
 
             $sql = file_get_contents($sql_file);
+            if ($sql === false) {
+                throw new Exception('Không thể đọc file SQL.');
+            }
+
             if (!$thanhdieudb->multi_query($sql)) 
             {
                 throw new Exception('Lỗi import sql: '.$thanhdieudb->error);
@@ -96,6 +100,9 @@ class ThanhDieuInstaller
         if (file_exists($this->install_lock)) 
         {
             $content = file_get_contents($this->install_lock);
+            if ($content === false) {
+                throw new Exception('Không thể đọc file install.lock.');
+            }
             if ($content === $this->domain()) 
             {
                 throw new Exception('Tên miền này đã được cài đặt trước đó, để cài đặt lại bạn có thể xoá tệp install.lock & config.ini!');
@@ -128,7 +135,7 @@ class ThanhDieuInstaller
      */
     private function domain()
     {
-        return $_SERVER['HTTP_HOST'];
+        return $_SERVER['HTTP_HOST'] ?? 'localhost';
     }
 
     /**
@@ -140,13 +147,16 @@ class ThanhDieuInstaller
     {
         $db_config = '<?php'.PHP_EOL . 
         '$config = ['.PHP_EOL . 
-        '    \'server\' => \''.$this->dbServer.'\','.PHP_EOL . 
-        '    \'username\' => \''.$this->dbUser.'\','.PHP_EOL . 
-        '    \'password\' => \''.$this->dbPwd.'\','.PHP_EOL . 
-        '    \'database\' => \''.$this->dbName.'\','.PHP_EOL . 
+        '    \'server\' => \''.$this->escape_string($this->dbServer).'\','.PHP_EOL . 
+        '    \'username\' => \''.$this->escape_string($this->dbUser).'\','.PHP_EOL . 
+        '    \'password\' => \''.$this->escape_string($this->dbPwd).'\','.PHP_EOL . 
+        '    \'database\' => \''.$this->escape_string($this->dbName).'\','.PHP_EOL . 
         '];'.PHP_EOL;
 
-        file_put_contents($_SERVER['DOCUMENT_ROOT'].'/function/connect/config.ini.php', $db_config);
+        $config_path = $_SERVER['DOCUMENT_ROOT'].'/function/connect/config.ini.php';
+        if (file_put_contents($config_path, $db_config) === false) {
+            throw new Exception('Không thể ghi file cấu hình cơ sở dữ liệu.');
+        }
     }
 
     /**
@@ -160,6 +170,9 @@ class ThanhDieuInstaller
     {
         $thanhdieudb->set_charset("utf8mb4");
         $wt = $thanhdieudb->prepare("INSERT INTO users (`username`, `password`, `rank`, `access_key`, `ip`) VALUES (?, ?, ?, ?, ?)");
+        if (!$wt) {
+            throw new Exception('Lỗi chuẩn bị câu truy vấn: '.$thanhdieudb->error);
+        }
         $wt->bind_param("sssss", $this->username, $this->password, $this->rank, $this->access_key, $this->ip);
         if (!$wt->execute()) {
             throw new Exception('Lỗi khi tạo tài khoản: '.$wt->error);
@@ -177,6 +190,9 @@ class ThanhDieuInstaller
     private function secret_key($thanhdieudb)
     {
         $aes = $thanhdieudb->prepare("UPDATE ws_settings SET `key-aes`=?");
+        if (!$aes) {
+            throw new Exception('Lỗi chuẩn bị câu truy vấn: '.$thanhdieudb->error);
+        }
         $aes->bind_param("s", $this->secret_key);
         if (!$aes->execute()) 
         {
@@ -204,9 +220,21 @@ class ThanhDieuInstaller
         return $enc; // enc data
     }
 
+    /**
+     * Escape string for safe output
+     *
+     * @param $str
+     * @return string
+     */
+    private function escape_string($str)
+    {
+        return addslashes($str);
+    }
+
     private function msg()
     {
-        return '<b>Cài đặt CSDL Hoàn Tất!</b><br>Tài Khoản: '.$this->username.'<br>Mật Khẩu: '.$_POST['password'].'';
+        // Fixed: Do NOT expose password in response
+        return '<b>Cài đặt CSDL Hoàn Tất!</b><br>Tài Khoản: '.$this->username.'<br>Mật Khẩu: [Đã được mã hóa - Vui lòng sử dụng mật khẩu bạn đã nhập]';
     }
 }
 
