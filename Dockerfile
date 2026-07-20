@@ -13,3 +13,6 @@ RUN cd /var/www/html && composer install --no-dev --optimize-autoloader
 RUN a2enmod rewrite
 
 EXPOSE 80
+# Cấp quyền sở hữu thư mục web cho user www-data của Apache
+RUN chown -R www-data:www-data /var/www/html
+
