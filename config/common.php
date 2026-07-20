@@ -1,10 +1,8 @@
 <?php
-// 1. Chống lỗi "headers already sent" bằng Output Buffering
 ob_start();
 
-// 2. Kiểm tra nếu Session chưa bật thì mới bật (tránh thông báo Warning)
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    @session_start();
 }
 
 // --- Các đoạn code config phía dưới của file common.php giữ nguyên ---
