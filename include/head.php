@@ -54,7 +54,7 @@ if (ExcludedDatabase())
 </i></span>
 </div>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/function/handle/browser-check.php';?>
-<?php if($TD->Setting('loader')):?>
+<?php if(false):?>
 <div class="lavender-preloader">
 <div class="loading-container">
     <img src="<?=$TD->Setting('navbar-logo')?>" alt="<?=$TD->Setting('name-site')?>">
