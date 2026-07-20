@@ -1,6 +1,16 @@
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/head.php';?>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/nav.php';?>
 <main>
+    <script>
+  // Ép tắt Preloader sau 2.5s phòng trường hợp lỗi PHP/JS ngầm
+  setTimeout(function() {
+    var loader = document.querySelector('.preloader, #preloader, .loading-wrapper, #overlay-loading');
+    if (loader) {
+      loader.style.display = 'none';
+    }
+  }, 2500);
+    </script>
+    
     <div class="container-none">
         <div class="grid grid-cols-12 gap-6">
             <div class="col-span-12">
