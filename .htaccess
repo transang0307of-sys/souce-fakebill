@@ -197,9 +197,10 @@ RewriteRule ^ajax/global/default/stats$ /app/ajax/global/default/stats.php [L]
 RewriteRule ^ajax/global/installer$ /app/ajax/global/default/installer.php [L]
 RewriteRule ^ajax/global/download$ /app/ajax/global/default/download.php [L]
 #==============================#
-<FilesMatch "(install\.lock|fakebill\.sql|robots\.txt)">
+<FilesMatch "(install\.lock|fakebill\.sql)">
     Order allow,deny
     Deny from all
 </FilesMatch>
+
 #==============================#
 </IfModule>
