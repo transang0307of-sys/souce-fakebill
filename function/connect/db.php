@@ -1,9 +1,9 @@
 <?php
-$localhost_db = 'tokaido.proxy.rlwy.net';
+$localhost_db = 'mysql.railway.internal';
 $username_db  = 'root';
 $password_db  = 'bNfBDgkYBcxYPNbsxHIHEbXvzkDIeHIX';
 $database_db  = 'railway';
-$port_db      = 24575;
+$port_db      = 3306;
 
 $conn = mysqli_connect(
     $localhost_db,
