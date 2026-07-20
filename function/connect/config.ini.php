@@ -1,4 +1,4 @@
-p<?php
+<?php
 $config = [
     'server'   => 'mysql-3f4b73e7-transang0307of-e326.d.aivencloud.com',
     'port'     => '16996',
