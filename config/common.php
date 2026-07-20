@@ -1,7 +1,14 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
+// 1. Chống lỗi "headers already sent" bằng Output Buffering
+ob_start();
+
+// 2. Kiểm tra nếu Session chưa bật thì mới bật (tránh thông báo Warning)
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// --- Các đoạn code config phía dưới của file common.php giữ nguyên ---
+
 require $_SERVER["DOCUMENT_ROOT"]."/vendor/autoload.php";
 require $_SERVER["DOCUMENT_ROOT"]."/vendor/library/HtmlSplit.php";
 // require_once($_SERVER['DOCUMENT_ROOT'].'/function/call-back/controller/oauth.google.php');
