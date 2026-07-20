@@ -1,13 +1,3 @@
-<?php 
-// BẬT HIỂN THỊ LỖI - ĐẶT Ở ĐÂY MỚI CÓ TÁC DỤNG
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-function ExcludedDatabase() 
-{
-    // ... phần giữ nguyên
-}
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/head.php';?>
 <?php require $_SERVER['DOCUMENT_ROOT'].'/include/nav.php';?>
 
